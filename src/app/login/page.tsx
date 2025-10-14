@@ -6,15 +6,26 @@ import { useRouter } from "next/navigation";
 import { useUser } from "@/providers/AuthProvider";
 import { IG_LOGO } from "@/icons/ig-logo";
 import { toast } from "sonner";
+import { jwtDecode } from "jwt-decode";
 
 type inputValues = {
   email: string;
   password: string;
 };
-
+type DecodedToken = {
+  data: {
+    _id: string;
+    email: string;
+    username: string;
+    bio: string | null;
+    profilePicture: string | null;
+    password: string;
+  };
+};
 const Page = () => {
   const { setUser, user } = useUser();
   const { push } = useRouter();
+
 
   const [inputValues, setInputValues] = useState<inputValues>({
     email: "",
@@ -40,16 +51,15 @@ const Page = () => {
         password: inputValues.password,
       }),
     });
-    //  const user = await response.json();
-    //  localStorage.setItem("user" , JSON.stringify(user));
-    //  setUser(user);
+    
 
     if (response.ok) {
-      const user = await response.json();
-      localStorage.setItem("user", JSON.stringify(user));
-      setUser(user);
+      const token = await response.json();
+      localStorage.setItem("token", token);
+      const decodedToken: DecodedToken = jwtDecode(token);
+      setUser(decodedToken.data);
+      toast.success("successfully sign in ");
       push("/");
-      toast.success("successfully loged in");
     } else {
       toast.error("try again ");
     }

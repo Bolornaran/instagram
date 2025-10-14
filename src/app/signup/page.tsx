@@ -6,11 +6,23 @@ import { useRouter } from "next/navigation";
 import { useUser } from "@/providers/AuthProvider";
 import { IG_LOGO } from "@/icons/ig-logo";
 import { toast } from "sonner";
+import { jwtDecode } from "jwt-decode";
 
 type inputValues = {
   email: string;
   password: string;
   username: string;
+};
+
+type DecodedToken = {
+  data: {
+    _id: string;
+    email: string;
+    username: string;
+    bio: string | null;
+    profilePicture: string | null;
+    password: string;
+  };
 };
 
 const Page = () => {
@@ -32,7 +44,6 @@ const Page = () => {
       handleInputValues({ ...inputValues, username: value });
     }
   };
-
   const { push } = useRouter();
 
   const signup = async () => {
@@ -46,16 +57,14 @@ const Page = () => {
       }),
     });
 
-    // const newUser = await response.json();
-    // localStorage.setItem("user", JSON.stringify(newUser));
-    // setUser(newUser);
-
     if (response.ok) {
-      const user = await response.json();
-      localStorage.setItem("user", JSON.stringify(user));
-      setUser(user);
-      push("/");
+      const token = await response.json();
+      localStorage.setItem("token", token);
+
+      const decodedToken: DecodedToken = jwtDecode(token);
+      setUser(decodedToken.data);
       toast.success("successfully sign in ");
+      push("/");
     } else {
       toast.error("existing ");
     }

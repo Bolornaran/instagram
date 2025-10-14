@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+ env:{
+   HF_API_KEY :process.env.HF_API_KEY ?? ''
+ }
 };
 
 export default nextConfig;
