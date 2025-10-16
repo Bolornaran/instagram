@@ -51,6 +51,7 @@ export default function Home() {
     const response = await fetch(
       `http://localhost:5555/post/toggle-like/${postId}`,
       {
+        method: "POST",
         headers: {
           authorization: `Bearer ${token}`,
         },
@@ -63,7 +64,7 @@ export default function Home() {
   };
 
   const followUser = async (followedUserId: string) => {
-    const response = await fetch(
+    const response = await fetch (
       `http://localhost:5555/follow-toggle/${followedUserId}`,
       {
         method: "POST",
