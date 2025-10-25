@@ -14,8 +14,8 @@ const Page = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { token } = useUser();
 
-   //const HF_API_KEY = process.env.HF_API_KEY;
- const HF_API_KEY = "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";
+   const HF_API_KEY = process.env.HF_API_KEY;
+ 
 
   const generateImg = async () => {
     if (!prompt.trim()) return;
