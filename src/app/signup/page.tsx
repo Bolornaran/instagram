@@ -8,6 +8,7 @@ import { IG_LOGO } from "@/icons/ig-logo";
 import { toast } from "sonner";
 import { jwtDecode } from "jwt-decode";
 
+
 type inputValues = {
   email: string;
   password: string;
@@ -63,7 +64,7 @@ const Page = () => {
 
       const decodedToken: DecodedToken = jwtDecode(token);
       setUser(decodedToken.data);
-      toast.success("successfully sign in ");
+      toast.success("successfully signed up ");
       push("/");
     } else {
       toast.error("existing ");
@@ -71,9 +72,9 @@ const Page = () => {
   };
   console.log(inputValues);
 
-  useEffect(() => {
-    if (user) push("/");
-  }, [user]);
+  // useEffect(() => {
+  //   if (!user) push("/signup");
+  // }, [user]);
 
   return (
     <div>
@@ -94,7 +95,7 @@ const Page = () => {
         onChange={(e) => InputValues(e)}
       />
 
-      <Button onClick={signup}>sign in</Button>
+      <Button onClick={signup}>sign up</Button>
     </div>
   );
 };

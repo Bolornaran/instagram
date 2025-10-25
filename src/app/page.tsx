@@ -3,10 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Footer } from "./_components/Footer";
 import { Header } from "./_components/Header";
 import { useUser } from "@/providers/AuthProvider";
-import { Heart, HeartCrack } from "lucide-react";
+import { Heart, HeartCrack , MessageCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import Link from "next/link"
 
 type PostType = {
   _id: string;
@@ -23,6 +25,9 @@ type PostType = {
   images: string[];
   caption: string;
 };
+
+
+
 
 export default function Home() {
   const { token, user } = useUser();
@@ -63,6 +68,10 @@ export default function Home() {
     }
   };
 
+  const pushToComment = (postId:string) => {
+    push(`/comment/${postId}`)
+  }
+
   const followUser = async (followedUserId: string) => {
     const response = await fetch (
       `http://localhost:5555/follow-toggle/${followedUserId}`,
@@ -82,9 +91,16 @@ export default function Home() {
     }
   };
 
-  useEffect(() => {
-    if (!token) push("/signup");
-    fetchPosts();
+  // useEffect(() => {
+  //   if (!token) push("/signup");
+  //   fetchPosts();
+  // }, [token]);
+
+    useEffect(() => {
+    if (token) {
+      fetchPosts();
+    }
+    
   }, [token]);
 
   return (
@@ -125,8 +141,17 @@ export default function Home() {
                   <HeartCrack />
                 )}
               </button>
-            </div>
+              
+              <button
+              onClick = {() => pushToComment(post._id)}>
+                <MessageCircle  />
+              </button>
+             
+              
+             
 
+            </div>
+              
             <div className="px-3 py-2">
               <p className="text-sm font-semibold">{post.like.length} likes</p>
               <p className="text-sm">

@@ -1,10 +1,11 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState } from "react"
 import { upload } from "@vercel/blob/client";
 import { useUser } from "@/providers/AuthProvider";
-import { toast } from "sonner";
+import { toast } from "sonner"
+
 
 const Page = () => {
   const [prompt, setPrompt] = useState("");
@@ -13,13 +14,13 @@ const Page = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { token } = useUser();
 
-   const HF_API_KEY = process.env.HF_API_KEY;
-  
+   //const HF_API_KEY = process.env.HF_API_KEY;
+ const HF_API_KEY = "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";
 
   const generateImg = async () => {
     if (!prompt.trim()) return;
 
-    setIsLoading(true);
+    setIsLoading(true)
     setImgUrl("");
 
     try {
@@ -126,3 +127,5 @@ const Page = () => {
 };
 
 export default Page;
+
+

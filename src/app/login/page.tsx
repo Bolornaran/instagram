@@ -23,7 +23,7 @@ type DecodedToken = {
   };
 };
 const Page = () => {
-  const { setUser, user } = useUser();
+  const { setUser, token, setToken } = useUser();
   const { push } = useRouter();
 
 
@@ -56,6 +56,7 @@ const Page = () => {
     if (response.ok) {
       const token = await response.json();
       localStorage.setItem("token", token);
+      setToken(token);
       const decodedToken: DecodedToken = jwtDecode(token);
       setUser(decodedToken.data);
       toast.success("successfully sign in ");
@@ -66,8 +67,8 @@ const Page = () => {
   };
 
   useEffect(() => {
-    if (user) push("/");
-  }, [user]);
+    if (token) push("/");
+  }, [token]);
 
   return (
     <div>
