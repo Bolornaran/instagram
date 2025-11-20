@@ -5,50 +5,36 @@ import { useState } from "react"
 import { upload } from "@vercel/blob/client";
 import { useUser } from "@/providers/AuthProvider";
 import { toast } from "sonner"
-
+import { useRouter } from "next/navigation";
 
 const Page = () => {
   const [prompt, setPrompt] = useState("");
   const [caption, setCaption] = useState("");
-  const [imgUrl, setImgUrl] = useState("");
+  const [imgUrl, setImgUrl] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { token } = useUser();
+  const { push } = useRouter();
+
 
    const HF_API_KEY = process.env.HF_API_KEY;
  
-
+            
   const generateImg = async () => {
     if (!prompt.trim()) return;
 
     setIsLoading(true)
-    setImgUrl("");
+    setImgUrl([]);
 
     try {
-      const headers = {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${HF_API_KEY}`,
-      };
+      const response = await fetch("/api/generate", {
+        method: "POST",
+        body: JSON.stringify({ prompt }),
+      });
 
-      const response = await fetch(
-        `https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0`,
-        {
-          method: "POST",
-          headers: headers,
-          body: JSON.stringify({
-            inputs: prompt,
-            parameters: {
-              negative_prompt: "blurry , bad quality , distorted",
-              num_inference_steps: 20,
-              guidance_scale: 7.5,
-            },
-          }),
-        }
-      );
+      if (!response.ok) throw new Error("Failed to generate");
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status:${response.status}`);
-      }
       const blob = await response.blob();
+
       const file = new File([blob], "generated.png", { type: "image/png" });
 
       const uploaded = await upload(file.name, file, {
@@ -56,13 +42,15 @@ const Page = () => {
         handleUploadUrl: "/api/upload",
       });
 
-      setImgUrl(uploaded.url);
+      setImgUrl((prev) => [...prev, uploaded.url]);
     } catch (err) {
       console.log(err);
       toast.error("Failed to generate img");
       setIsLoading(false);
     }
   };
+
+
 
   const createdPost = async () => {
     const response = await fetch("http://localhost:5555/post/create", {
@@ -73,11 +61,12 @@ const Page = () => {
       },
       body: JSON.stringify({
         caption: caption,
-        images: [imgUrl],
+        images: imgUrl,
       }),
     });
     if (response.ok) {
       toast.success("successdully posted");
+      push("/");
     } else {
       toast.error("could not post");
     }
@@ -114,7 +103,9 @@ const Page = () => {
           <div>
             <div>
               <h2>Your generated image</h2>
-              <img src={imgUrl} />
+{imgUrl && imgUrl.map((img,index)=>(
+<img key={index} src={img} alt="" />
+))}
             </div>
           </div>
         )}

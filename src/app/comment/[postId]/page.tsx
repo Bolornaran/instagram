@@ -15,7 +15,7 @@ type inputValues = {
 type CommentType = {
   _id: string;
   comment: string;
-  user: { name: string };
+  user: { username: string };
   createdAt: string;
 };
 
@@ -68,6 +68,7 @@ const postComment = async() => {
         })
       }
     );
+    await fetchComments()
     if (response.ok) {
       toast.success("comment bichlee");
     }
@@ -96,7 +97,7 @@ const postComment = async() => {
         {comments.map((comment, index) => (
           <div key={index} className="border-b py-2">
             <p>{comment.comment}</p>
-            <small className="text-gray-500">by {comment.user.name}</small>
+            <small className="text-gray-500">by {comment.user.username}</small>
           </div>
 ))}
     </div>

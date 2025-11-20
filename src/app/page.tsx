@@ -10,10 +10,10 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import Link from "next/link"
 
-type PostType = {
+export type PostType = {
   _id: string;
   like: string[];
-  user: {
+  user: { 
     username: string;
     email: string;
     bio: string | null;
@@ -103,6 +103,10 @@ export default function Home() {
     
   }, [token]);
 
+  const redirectUserProfile = (userId: string) => {
+    push(`/user-profile/${userId}`)
+  }
+ console.log(user?._id)
   return (
     <div>
       <Header />
@@ -114,13 +118,13 @@ export default function Home() {
           >
             <div className="flex items-center p-3">
               <img
-                src={post.user.profilePicture}
+                src={post?.user?.profilePicture?.[0]}
                 alt="profile"
                 className="w-10 h-10 rounded-full object-cover mr-3"
               />
-              <div className="flex column">
+              <div className="flex column" onClick={() => redirectUserProfile(post.user._id)}>
                 <span className="font-semibold text-sm">
-                  {post.user.username}
+                  {post?.user?.username}
                 </span>
               </div>
             </div>
@@ -155,7 +159,7 @@ export default function Home() {
             <div className="px-3 py-2">
               <p className="text-sm font-semibold">{post.like.length} likes</p>
               <p className="text-sm">
-                <span className="font-semibold mr-1">{post.user.username}</span>
+                <span className="font-semibold mr-1">{post?.user?.username}</span>
                 {post.caption}
               </p>
               <Button

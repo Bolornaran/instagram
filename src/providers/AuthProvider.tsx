@@ -57,8 +57,6 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
       setToken(token);
       const decodedToken: DecodedToken = jwtDecode(token);
       setUser(decodedToken.data);
-    } else {
-      push("/login");
     }
   }, []);
 
